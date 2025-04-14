@@ -1,7 +1,9 @@
-.h1 {
-  color: crimson;
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.h2 {
-  color: brown;
+.container h3 {
+  margin-bottom: 0px;
 }
