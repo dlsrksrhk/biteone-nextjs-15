@@ -4,10 +4,12 @@ import style from "./page.module.css";
 export default async function Page({
   params,
 }: {
-  params: { id: string | string[] };
+  params: Promise<{ id: string | string[] }>;
 }) {
+  const param = await params;
+
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${params.id}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${param.id}`
   );
 
   if (!response.ok) {

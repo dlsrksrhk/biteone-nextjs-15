@@ -8,8 +8,10 @@ export default async function Page({
     q?: string;
   }>;
 }) {
+  const param = await searchParams;
+
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/search?q=${searchParams.q}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/search?q=${param.q}`
   );
 
   if (!response.ok) {
