@@ -1,17 +1,18 @@
-import ClientComponent from "@/comonents/client-component";
+import BookItem from "@/components/book-item";
+import books from "@/mock/books.json";
 
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ q: string }>;
+  searchParams: Promise<{
+    q?: string;
+  }>;
 }) {
-  const { q } = await searchParams;
   return (
     <div>
-      서치 페이지 {q}{" "}
-      <ClientComponent>
-        <></>
-      </ClientComponent>
+      {books.map((book) => (
+        <BookItem key={book.id} {...book} />
+      ))}
     </div>
   );
 }
