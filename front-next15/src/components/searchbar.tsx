@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import style from "./serachbar.module.css";
 
 export default function Searchbar() {
+  console.log("searchbar render");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
