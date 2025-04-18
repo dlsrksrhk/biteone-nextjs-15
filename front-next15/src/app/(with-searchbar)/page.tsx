@@ -3,10 +3,10 @@ import style from "./page.module.css";
 import { BookData } from "@/types";
 import { delay } from "@/util/delay";
 import { Suspense } from "react";
-import BookItemSkeleton from "@/components/skeleton/book-item-skeleton";
 import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
 
 async function AllBooks() {
+  console.log("AllBooks 컴포넌트 렌더링");
   await delay(1500);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`
@@ -28,6 +28,7 @@ async function AllBooks() {
 }
 
 async function RecoBooks() {
+  console.log("RecoBooks 컴포넌트 렌더링");
   await delay(2000);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`,
@@ -52,6 +53,7 @@ async function RecoBooks() {
 }
 
 export default function Home() {
+  console.log("Home 컴포넌트 렌더링");
   return (
     <div className={style.container}>
       <section>
