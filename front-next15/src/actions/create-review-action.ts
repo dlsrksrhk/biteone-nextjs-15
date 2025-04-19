@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 export async function createReviewAction(formData: FormData) {
   const bookId = formData.get("bookId")?.toString();
   const content = formData.get("content")?.toString();
@@ -30,6 +32,8 @@ export async function createReviewAction(formData: FormData) {
     if (!response.ok) {
       throw new Error("리뷰 등록에 실패했습니다.");
     }
+
+    revalidatePath(`/book/${bookId}`); //재검증
   } catch (error) {
     console.error("리뷰 등록 실패", error);
   }
