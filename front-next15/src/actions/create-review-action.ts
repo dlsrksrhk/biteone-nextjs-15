@@ -30,8 +30,6 @@ export async function createReviewAction(formData: FormData) {
     if (!response.ok) {
       throw new Error("리뷰 등록에 실패했습니다.");
     }
-
-    console.log("리뷰 등록 성공");
   } catch (error) {
     console.error("리뷰 등록 실패", error);
   }

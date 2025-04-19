@@ -1,7 +1,8 @@
-import { BookData } from "@/types";
+import { BookData, ReviewData } from "@/types";
 import style from "./page.module.css";
 import { notFound } from "next/navigation";
-import { createReviewAction } from "@/actions/create-review-action";
+import ReviewItem from "@/components/review-item";
+import ReviewEditor from "@/components/review-editor";
 
 export const dynamicParams = true;
 
@@ -20,6 +21,7 @@ export default async function Page({
     <div className={style.container}>
       <BookDetail bookId={param.id} />
       <ReviewEditor bookId={param.id} />
+      <ReviewList bookId={param.id} />
     </div>
   );
 }
@@ -59,20 +61,22 @@ async function BookDetail({ bookId }: { bookId: string }) {
   );
 }
 
-function ReviewEditor({ bookId }: { bookId: string }) {
+async function ReviewList({ bookId }: { bookId: string }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`
+  );
+
+  if (!response.ok) {
+    throw new Error(`리뷰 목록을 가져오는 데 실패했습니다. ${response.status}`);
+  }
+
+  const reviews: ReviewData[] = await response.json();
+
   return (
     <section>
-      <form action={createReviewAction}>
-        <input type="hidden" name="bookId" value={bookId} readOnly />
-        <input
-          required
-          name="content"
-          type="text"
-          placeholder="리뷰를 입력하세요."
-        />
-        <input required name="author" type="text" placeholder="작성자" />
-        <button type="submit">리뷰 등록</button>
-      </form>
+      {reviews.map((review) => (
+        <ReviewItem key={review.id} {...review} />
+      ))}
     </section>
   );
 }
