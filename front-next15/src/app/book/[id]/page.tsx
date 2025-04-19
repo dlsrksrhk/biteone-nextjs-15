@@ -1,6 +1,8 @@
-import { BookData } from "@/types";
+import { BookData, ReviewData } from "@/types";
 import style from "./page.module.css";
 import { notFound } from "next/navigation";
+import ReviewItem from "@/components/review-item";
+import ReviewEditor from "@/components/review-editor";
 
 export const dynamicParams = true;
 
@@ -11,12 +13,22 @@ export function generateStaticParams() {
 export default async function Page({
   params,
 }: {
-  params: Promise<{ id: string | string[] }>;
+  params: Promise<{ id: string }>;
 }) {
   const param = await params;
 
+  return (
+    <div className={style.container}>
+      <BookDetail bookId={param.id} />
+      <ReviewEditor bookId={param.id} />
+      <ReviewList bookId={param.id} />
+    </div>
+  );
+}
+
+async function BookDetail({ bookId }: { bookId: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${param.id}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`
   );
 
   if (!response.ok) {
@@ -32,7 +44,7 @@ export default async function Page({
     book;
 
   return (
-    <div className={style.container}>
+    <section>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -45,6 +57,26 @@ export default async function Page({
         {author} | {publisher}
       </div>
       <div className={style.description}>{description}</div>
-    </div>
+    </section>
+  );
+}
+
+async function ReviewList({ bookId }: { bookId: string }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/book/${bookId}`
+  );
+
+  if (!response.ok) {
+    throw new Error(`리뷰 목록을 가져오는 데 실패했습니다. ${response.status}`);
+  }
+
+  const reviews: ReviewData[] = await response.json();
+
+  return (
+    <section>
+      {reviews.map((review) => (
+        <ReviewItem key={review.id} {...review} />
+      ))}
+    </section>
   );
 }
