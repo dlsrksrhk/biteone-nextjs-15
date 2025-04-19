@@ -1,6 +1,7 @@
 import { BookData } from "@/types";
 import style from "./page.module.css";
 import { notFound } from "next/navigation";
+import { createReviewAction } from "@/actions/create-review-action";
 
 export const dynamicParams = true;
 
@@ -11,12 +12,21 @@ export function generateStaticParams() {
 export default async function Page({
   params,
 }: {
-  params: Promise<{ id: string | string[] }>;
+  params: Promise<{ id: string }>;
 }) {
   const param = await params;
 
+  return (
+    <div className={style.container}>
+      <BookDetail bookId={param.id} />
+      <ReviewEditor bookId={param.id} />
+    </div>
+  );
+}
+
+async function BookDetail({ bookId }: { bookId: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${param.id}`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${bookId}`
   );
 
   if (!response.ok) {
@@ -32,7 +42,7 @@ export default async function Page({
     book;
 
   return (
-    <div className={style.container}>
+    <section>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -45,6 +55,24 @@ export default async function Page({
         {author} | {publisher}
       </div>
       <div className={style.description}>{description}</div>
-    </div>
+    </section>
+  );
+}
+
+function ReviewEditor({ bookId }: { bookId: string }) {
+  return (
+    <section>
+      <form action={createReviewAction}>
+        <input type="hidden" name="bookId" value={bookId} readOnly />
+        <input
+          required
+          name="content"
+          type="text"
+          placeholder="리뷰를 입력하세요."
+        />
+        <input required name="author" type="text" placeholder="작성자" />
+        <button type="submit">리뷰 등록</button>
+      </form>
+    </section>
   );
 }
