@@ -4,6 +4,18 @@ import { BookData } from "@/types";
 import { delay } from "@/util/delay";
 import { Suspense } from "react";
 import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "ONEBITE BOOKS",
+  description: "원바이트 북스에 오신 것을 환영합니다.",
+  openGraph: {
+    title: "ONEBITE BOOKS",
+    description: "원바이트 북스에 오신 것을 환영합니다.",
+    siteName: "ONEBITE BOOKS",
+    images: ["/thumbnail.png"],
+  },
+};
 
 async function AllBooks() {
   console.log("AllBooks 컴포넌트 렌더링");
