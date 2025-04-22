@@ -4,8 +4,38 @@ import { notFound } from "next/navigation";
 import ReviewItem from "@/components/review-item";
 import ReviewEditor from "@/components/review-editor";
 import Image from "next/image";
+import { Metadata } from "next";
 
 export const dynamicParams = true;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const param = await params;
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/${param.id}`
+  );
+
+  if (!response.ok) {
+    throw new Error(`책 정보를 가져오는 데 실패했습니다. ${response.status}`);
+  }
+
+  const book: BookData = await response.json();
+
+  return {
+    title: `${book.title}`,
+    description: `${book.description}`,
+    openGraph: {
+      title: `${book.title} 검색 결과`,
+      description: `${book.description}`,
+      siteName: "ONEBITE BOOKS",
+      images: [book.coverImgUrl],
+    },
+  };
+}
 
 export function generateStaticParams() {
   return [{ id: "1" }, { id: "2" }, { id: "3" }];
